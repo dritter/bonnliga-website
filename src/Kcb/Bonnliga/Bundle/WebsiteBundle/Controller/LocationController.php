@@ -18,24 +18,28 @@ class LocationController extends Controller {
     public function indexAction() {
         return array(
             'spielstaetten' => $this->getDoctrine()->getRepository('KcbBonnligaWebsiteBundle:Spielstaette')->findBy(array(), array('name' => 'asc')),
-            'stammlokale' => $this->getDoctrine()->getRepository('KcbBonnligaWebsiteBundle:Stammlokal')->findAll()
+            'stammlokale' => $this->getDoctrine()->getRepository('KcbBonnligaWebsiteBundle:Stammlokal')->findBy(array(), array('name' => 'asc'))
         );
     }
 
     /**
-     * @Route("/spielstaette/{id}")
+     * @Route("/spielstaette/{slug}")
      * @Template
      */
-    public function spielstaetteDetailAction($id) {
-        return array('spielstaette' => $this->getDoctrine()->getRepository('KcbBonnligaWebsiteBundle:Spielstaette')->find($id));
+    public function spielstaetteDetailAction($slug) {
+        return array(
+            'spielstaette' => $this->getDoctrine()->getRepository('KcbBonnligaWebsiteBundle:Spielstaette')->findOneBy(array('slug' => $slug))
+        );
     }
 
     /**
-     * @Route("/stammlokal/{id}")
+     * @Route("/stammlokal/{slug}")
      * @Template
      */
-    public function stammlokalDetailAction() {
-        return array();
+    public function stammlokalDetailAction($slug) {
+        return array(
+            'stammlokal' => $this->getDoctrine()->getRepository('KcbBonnligaWebsiteBundle:Stammlokal')->findOneBy(array('slug' => $slug))
+        );
     }
 
 }

@@ -14,6 +14,7 @@ class HomeController extends Controller {
      */
     public function indexAction() {
         return array(
+            'comingUp' => $this->getDoctrine()->getRepository('KcbBonnligaWebsiteBundle:Turnier')->getAktuelleTurniere()
         );
     }
 
