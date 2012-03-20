@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="kcb.bonnliga.rangliste_factory.class">Kcb\Bonnliga\Bundle\WebsiteBundle\Rangliste\RanglisteFactory</parameter>
         <parameter key="kcb.bonnliga.twig_extension.class">Kcb\Bonnliga\Bundle\WebsiteBundle\Twig\Extension</parameter>
+        <parameter key="sylius_blogger.inflector.slugizer.class">Kcb\Bonnliga\Bundle\WebsiteBundle\Blog\Slugizer</parameter>
     </parameters>
 
     <services>
