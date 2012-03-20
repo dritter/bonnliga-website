@@ -76,4 +76,9 @@ sylius_blogger:
             post: Kcb\Bonnliga\Bundle\WebsiteBundle\Entity\Blog\Post
         form:
             type:
-                post: Sylius\Bundle\BloggerBundle\Form\Type\PostType
+                post: Sylius\Bundle\BloggerBundle\Form\Type\SignedPostType
+        inflector:
+            slugizer: Kcb\Bonnliga\Bundle\WebsiteBundle\Blog\Slugizer
+    services:
+        blamer:
+            post: sylius_blogger.blamer.post.security
