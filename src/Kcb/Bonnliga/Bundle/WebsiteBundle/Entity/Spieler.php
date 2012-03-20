@@ -9,6 +9,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Spieler {
 
+    // Fake enum - Geschlecht
+    const GESCHLECHT_WEIBLICH = "Weiblich";
+    const GESCHLECHT_MAENNLICH = "Männlich";
+
+    // Fake enum - Status
+    const EINSTUFUNG_PRO = "Pro";
+    const EINSTUFUNG_HOBBY = "Hobby";
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -19,7 +27,12 @@ class Spieler {
     /**
      * @ORM\Column
      */
-    protected $name;
+    protected $vorname;
+
+    /**
+     * @ORM\Column
+     */
+    protected $nachname;
 
     /**
      * @ORM\ManyToOne(targetEntity="Location", inversedBy="stammspieler")
@@ -31,6 +44,16 @@ class Spieler {
      */
     protected $platzierungen;
 
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $geschlecht;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $einstufung;
+
     public function __construct() {
         $this->platzierungen = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -39,12 +62,8 @@ class Spieler {
         return $this->id;
     }
 
-    public function setName($name) {
-        $this->name = $name;
-    }
-
     public function getName() {
-        return $this->name;
+        return $this->vorname . ' ' . substr($this->nachname, 0, 1) . '.';
     }
 
     public function setStammlokal(Location $stammlokal) {
@@ -59,4 +78,45 @@ class Spieler {
         return $this->platzierungen;
     }
 
+    public function setGeschlecht($geschlecht)
+    {
+        if(!in_array($geschlecht, array(self::GESCHLECHT_MAENNLICH, self::GESCHLECHT_WEIBLICH)))
+            throw new \InvalidArgumentException("Ungültiges Geschlecht");
+
+        $this->geschlecht = $geschlecht;
+    }
+
+    public function getGeschlecht()
+    {
+        return $this->geschlecht;
+    }
+
+    public function setEinstufung($einstufung)
+    {
+        if(!in_array($einstufung, array(self::EINSTUFUNG_HOBBY, self::EINSTUFUNG_PRO)))
+                    throw new \InvalidArgumentException("Ungültige Einstufung");
+
+        $this->einstufung = $einstufung;
+    }
+
+    public function getEinstufung()
+    {
+        return $this->einstufung;
+    }
+
+    public function setNachname($nachname) {
+        $this->nachname = $nachname;
+    }
+
+    public function getNachname() {
+        return $this->nachname;
+    }
+
+    public function setVorname($vorname) {
+        $this->vorname = $vorname;
+    }
+
+    public function getVorname() {
+        return $this->vorname;
+    }
 }

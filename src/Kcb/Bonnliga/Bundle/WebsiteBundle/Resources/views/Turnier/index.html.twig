@@ -1,4 +1,5 @@
 {% extends "KcbBonnligaWebsiteBundle:Layout:base.html.twig" %}
+{% import "KcbBonnligaWebsiteBundle:Turnier:macros.html.twig" as turnierMacros %}
 
 {% block title %}
 Turniere
@@ -6,50 +7,10 @@ Turniere
 
 {% block body %}
 
-    <fieldset>
-        <legend>Nächste Turniere</legend>
+    <h2>Nächste Turniere</h2>
+    {{ turnierMacros.list(comingUp) }}
 
-        {% for i, turnier in comingUp  %}
-            {% if i % 4 == 0 %}
-                {% if i > 0 %}
-                    </div>
-                {% endif %}
+    <h2>Vergangene Turniere</h2>
+    {{ turnierMacros.list(past) }}
 
-                <div class="row-fluid show-grid">
-            {% endif %}
-            {{ _self.turnierDetails(turnier) }}
-        {% endfor %}
-
-    </fieldset>
-
-    <fieldset>
-        <legend>Vergangene Turniere</legend>
-
-        {% for i, turnier in past %}
-            {% if i % 4 == 0 %}
-                {% if i > 0 %}
-                    </div>
-                {% endif %}
-
-                <div class="row-fluid show-grid">
-            {% endif %}
-            {{ _self.turnierDetails(turnier) }}
-        {% endfor %}
-    </fieldset>
 {% endblock %}
-
-{% macro turnierDetails(turnier) %}
-    <div class="span3 {% if turnier.nichtBald %}farAway{% endif %}">
-        <h4>{{ turnier.beginn | date('l, d. F') }}</h4>
-        <ul class="location }">
-            <li class="icon-home">
-                <a href="{{ spielstaettePath(turnier.spielstaette) }}"><strong>{{ turnier.spielstaette.name }}</strong></a>,
-                {{ turnier.spielstaette.adresse }}
-            </li>
-            <li class="icon-info-sign">{{ turnier.spielstaette.beschreibung | nl2br }}</li>
-            {% if turnier.vorbei %}
-                <li class="icon-trophy">Ergebnis</li>
-            {% endif %}
-        </ul>
-    </div>
-{% endmacro %}
