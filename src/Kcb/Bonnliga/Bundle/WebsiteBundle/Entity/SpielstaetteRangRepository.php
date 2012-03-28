@@ -2,19 +2,19 @@
 
 namespace Kcb\Bonnliga\Bundle\WebsiteBundle\Entity;
 
-use Doctrine\ORM\EntityRepository;
+class SpielstaetteRangRepository extends RangRepository {
 
-class RangRepository extends EntityRepository {
-
-    public function findRaenge($limit) {
+    public function findBySpielstaette(Spielstaette $spielstaette, $limit) {
         $className = $this->getClassName();
 
         $query = $this->getEntityManager()->createQuery("
             SELECT r, s, l FROM $className r
             JOIN r.spieler s
             JOIN s.stammlokal l
+            JOIN r.spielstaette rs
+            WHERE rs.id = :id
             ORDER BY r.rang ASC
-        ");
+        ")->setParameter('id', $spielstaette->getId());
 
         if ($limit)
             $query->setMaxResults($limit);
@@ -22,19 +22,20 @@ class RangRepository extends EntityRepository {
         return $query->getResult();
     }
 
-    public function findOneBySpieler(Spieler $spieler) {
+    public function findOneBySpielerAndSpielstaette(Spieler $spieler, Spielstaette $spielstaette) {
         $className = $this->getClassName();
 
         $query = $this->getEntityManager()->createQuery("
             SELECT r FROM $className r
             JOIN r.spieler s
-            WHERE s.id = :id
-        ")->setParameter('id', $spieler->getId());
+            JOIN r.spielstaette rs
+            WHERE s.id = :id AND rs.id = :spielstaetteId
+        ")->setParameter('id', $spieler->getId())->setParameter('spielstaetteId', $spielstaette->getId());
 
         if ($result = $query->getResult()) {
             return reset($result);
         } else {
-            $rang = new $className($spieler);
+            $rang = new $className($spieler, $spielstaette);
             $this->getEntityManager()->persist($rang);
             $this->getEntityManager()->flush($rang);
             return $rang;

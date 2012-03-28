@@ -1,49 +1,45 @@
-{% macro ranglisteSwitch() %}
-    {% set buttons = {
-        'Gesamt': 'kcb_bonnliga_website_rangliste_gesamt',
-        'Hobby': 'kcb_bonnliga_website_rangliste_hobby',
-        'Ladies': 'kcb_bonnliga_website_rangliste_ladies',
-        'Pro': 'kcb_bonnliga_website_rangliste_pro'
-    } %}
-    <div class="btn-group">
-        {% for label, route in buttons %}
-            {% set path = path(route) %}
-            {% set active = (path == app.request.requestUri) %}
-            {% if active %}
-                <span class="btn active">{{ label }}</span>
-            {% else %}
-                <a href="{{ path }}" class="btn">{{ label }}</a>
-            {% endif %}
-        {% endfor %}
-    </div>
-{% endmacro %}
-
-{% macro rangliste(rangliste) %}
+{% macro rangliste(rangliste, columns, limit, showTrophies) %}
     {% set mapping={'gleich': 'minus', 'steigend': 'chevron-up', 'fallend': 'chevron-down'} %}
-    <table class="table table-striped table-condensed ranking">
+
+    <table class="table table-bordered table-striped table-condensed ranking">
         <thead>
             <tr>
-                <th>Rang</th>
-                <th></th>
-                <th>Name</th>
-                <th>Einstufung</th>
-                <th>Stammlokal</th>
-                <th>Punkte</th>
-                <th>Teilnahmen</th>
+                {% if 'rang' in columns %}<th>Rang</th>{% endif %}
+                {% if 'tendenz' in columns %}<th></th>{% endif %}
+                {% if 'name' in columns %}<th>Name</th>{% endif %}
+                {% if 'einstufung' in columns %}<th>Einstufung</th>{% endif %}
+                {% if 'stammlokal' in columns %}<th>Stammlokal</th>{% endif %}
+                {% if 'punkte' in columns %}<th>Punkte</th>{% endif %}
+                {% if 'teilnahmen' in columns %}<th>Teilnahmen</th>{% endif %}
             </tr>
         </thead>
         <tbody>
-        {% for rang in rangliste.raenge %}
-            <tr>
-                <td>{{rang.rang}}</td>
-                <td>
-                    <i class="icon-large icon-{{mapping[rang.tendenz]}}"></i>
-                </td>
-                <td>{{rang.spieler.name}}</td>
-                <td>{{rang.spieler.einstufung}}</td>
-                <td>{{rang.spieler.stammlokal.name}}</td>
-                <td>{{rang.punkte}}</td>
-                <td>{{rang.teilnahmen}}</td>
+        {% for rang in rangliste.raenge(limit | default(false)) %}
+            <tr class="{{rang.spieler.einstufung}} {{rang.spieler.geschlecht}}">
+                {% if 'rang' in columns %}
+                    <td>
+                        {{rang.rang}}
+                        {% if showTrophies %}
+                            {% if loop.index <= 3 %}
+                                <i class="icon-trophy
+                                {% if loop.index == 1%}
+                                    gold
+                                {% elseif loop.index == 2 %}
+                                    silver
+                                {% elseif loop.index == 3 %}
+                                    bronze
+                                {% endif %}
+                                "></i>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                {% endif %}
+                {% if 'tendenz' in columns %}<td><i class="icon-large icon-{{mapping[rang.tendenz]}}"></i></td>{% endif %}
+                {% if 'name' in columns %}<td>{{rang.spieler.name}}</td>{% endif %}
+                {% if 'einstufung' in columns %}<td>{{rang.spieler.einstufung}}</td>{% endif %}
+                {% if 'stammlokal' in columns %}<td>{{rang.spieler.stammlokal.name}}</td>{% endif %}
+                {% if 'punkte' in columns %}<td>{{rang.punkte}}</td>{% endif %}
+                {% if 'teilnahmen' in columns %}<td>{{rang.teilnahmen}}</td>{% endif %}
             </tr>
         {% endfor %}
         </tbody>
