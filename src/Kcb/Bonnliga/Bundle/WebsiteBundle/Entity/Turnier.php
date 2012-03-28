@@ -27,7 +27,8 @@ class Turnier {
     protected $beginn;
 
     /**
-     * @ORM\OneToMany(targetEntity="Platzierung", mappedBy="turnier", cascade={"ALL"}, orphanRemoval=true, indexBy="platz")
+     * @ORM\OneToMany(targetEntity="Platzierung", mappedBy="turnier", cascade={"ALL"}, orphanRemoval=true)
+     * @ORM\OrderBy({"platzierung" = "ASC"})
      */
     protected $platzierungen;
 
@@ -78,7 +79,7 @@ class Turnier {
     }
 
     public function isNichtBald() {
-        return $this->beginn > new \DateTime('next week');
+        return $this->beginn > new \DateTime('next month');
     }
 
     public function setBeschreibung($beschreibung) {
